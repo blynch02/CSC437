@@ -1,0 +1,22 @@
+{
+  "name": "csc437",
+  "version": "1.0.0",
+  "description": "This is the repo that I will be completing all developmental parts of my application for CSC437.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blynch02/CSC437.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blynch02/CSC437/issues"
+  },
+  "homepage": "https://github.com/blynch02/CSC437#readme",
+  "workspaces": [
+    "packages/*"
+  ]
+}
