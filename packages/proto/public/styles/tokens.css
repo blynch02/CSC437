@@ -1,0 +1,29 @@
+:root {
+    /* Colors */
+    --color-primary: #aa0000;         /* 49ers red */
+    --color-secondary: #b3995d;       /* 49ers gold */
+    --color-background-page: #faf7f2;
+    --color-background-header: var(--color-primary);
+    --color-background-card: white;
+    --color-text: #333333;
+    --color-text-light: #ffffff;
+    --color-link: var(--color-primary);
+    --color-link-inverted: var(--color-secondary);
+    
+    /* Spacing */
+    --size-spacing-small: 0.25rem;
+    --size-spacing-medium: 0.5rem;
+    --size-spacing-large: 1rem;
+    --size-spacing-xlarge: 2rem;
+    
+    /* Borders */
+    --border-radius: 0.25rem;
+    --border-width-thin: 1px;
+    --border-width-medium: 2px;
+    --border-width-thick: 4px;
+    --border-color: #dddddd;
+    
+    /* Shadows */
+    --shadow-light: 0 1px 2px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }

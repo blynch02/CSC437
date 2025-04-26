@@ -1,0 +1,66 @@
+body {
+    background-color: var(--color-background-page);
+    color: var(--color-text);
+    margin: 0;
+    padding: 0;
+  }
+  
+  header {
+    background-color: var(--color-background-header);
+    color: var(--color-text-light);
+    padding: var(--size-spacing-large);
+  }
+  
+  footer {
+    padding: var(--size-spacing-large);
+    margin-top: var(--size-spacing-xlarge);
+    border-top: var(--border-width-thin) solid var(--border-color);
+  }
+  
+  a {
+    color: var(--color-link);
+    text-decoration: none;
+  }
+  
+  header a {
+    color: var(--color-link-inverted);
+  }
+  
+  .card {
+    background-color: var(--color-background-card);
+    border-radius: var(--border-radius);
+    padding: var(--size-spacing-large);
+    margin: var(--size-spacing-large) 0;
+    box-shadow: var(--shadow-light);
+  }
+  
+  .team-info {
+    border-left: var(--border-width-thick) solid var(--color-secondary);
+    padding-left: var(--size-spacing-large);
+  }
+
+  /* Cookies and Cream theme for index page */
+  body.index-page {
+    /* Override default tokens with Cookies and Cream colors */
+    --color-background-page: #F5F5DC; /* Cream */
+    --color-text: #3D2B1F;            /* Dark Brown / Chocolate */
+    --color-link: #8B4513;            /* Saddle Brown */
+    --color-link-hover: #A0522D;       /* Sienna */
+    
+    /* Keep primary/secondary distinct if needed, or map them too */
+    /* Example: Make header background dark brown for contrast */
+    --color-primary: #3D2B1F; 
+    --color-secondary: #8B4513; /* Or another contrasting color */
+    --color-background-header: #6F4E37; /* Coffee Brown */
+    --color-text-light: #F5F5DC; /* Cream text on dark header */
+    --color-link-inverted: #D2B48C; /* Tan for links in header */
+    
+    /* Ensure page background and text color apply */
+    background-color: var(--color-background-page);
+    color: var(--color-text);
+  }
+
+  /* Apply the variable hover color to links */
+  body.index-page a:hover {
+    color: var(--color-link-hover);
+  }
