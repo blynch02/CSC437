@@ -15,6 +15,10 @@
 <body>
     <header>
         <h1>San Francisco 49ers</h1>
+        <label>
+            <input type="checkbox" id="darkModeToggle" autocomplete="off" />
+            Dark mode
+        </label>
         <nav>
             <a href="../index.html">Home</a>
         </nav>
@@ -61,5 +65,43 @@
     <footer>
         <p>&copy; 2025 NFL Dynasty Tracker</p>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const darkModeCheckbox = document.getElementById('darkModeToggle');
+
+            if (darkModeCheckbox) {
+                const label = darkModeCheckbox.parentElement; // The <label> containing the checkbox
+
+                // Listen for 'change' events on the label (bubbling from the checkbox)
+                label.addEventListener('change', function(event) {
+                    // Ensure the event originated from our specific checkbox
+                    if (event.target === darkModeCheckbox) {
+                        const isChecked = event.target.checked;
+
+                        // Create and dispatch the custom event to the body
+                        const customToggleEvent = new CustomEvent('darkmode:toggle', {
+                            detail: { isChecked: isChecked },
+                            bubbles: true // Allows the event to bubble
+                        });
+                        body.dispatchEvent(customToggleEvent);
+
+                        event.stopPropagation(); // Stop the original 'change' event from bubbling further
+                    }
+                });
+            }
+
+            // Body now listens for our custom 'darkmode:toggle' event
+            body.addEventListener('darkmode:toggle', function(event) {
+                const isChecked = event.detail.isChecked;
+                if (isChecked) {
+                    body.classList.add('dark-mode');
+                } else {
+                    body.classList.remove('dark-mode');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

@@ -27,3 +27,16 @@
     --shadow-light: 0 1px 2px rgba(0, 0, 0, 0.1);
     --shadow-medium: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
+
+body.dark-mode {
+  --color-background-page: #121212; /* Example dark background */
+  --color-text: #e0e0e0;             /* Example light text */
+  --color-background-card: #1e1e1e;   /* Example dark card background */
+  --color-link: #bb86fc;             /* Example accessible link color for dark mode */
+  --color-primary: #cf6679;          /* Example dark mode primary (adjust if needed) */
+  --color-secondary: #03dac6;         /* Example dark mode secondary (adjust if needed) */
+  --color-background-header: #1f1f1f; /* Example dark header background */
+  --color-text-light: #121212;        /* Text that was light becomes dark (e.g., on primary bg) */
+  --color-link-inverted: #03dac6;     /* Example dark mode inverted link */
+  --border-color: #333333;
+}
