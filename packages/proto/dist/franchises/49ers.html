@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>San Francisco 49ers | NFL Dynasty Tracker</title>
+    <link rel="stylesheet" href="/styles/reset.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/tokens.css">
+    <link rel="stylesheet" href="/styles/page.css">
+    <link rel="stylesheet" href="/styles/layout.css">
+</head>
+<body>
+    <header>
+        <h1>San Francisco 49ers</h1>
+        <label>
+            <input type="checkbox" id="darkModeToggle" autocomplete="off" />
+            Dark mode
+        </label>
+        <nav>
+            <a href="../index.html">Home</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section>
+            <h2><svg class="icon" aria-hidden="true"><use href="/icons/sections.svg#icon-team-info" /></svg>Team Information</h2>
+            <dl>
+                <dt>Founded</dt>
+                <dd>1946</dd>
+                
+                <dt>Location</dt>
+                <dd>San Francisco, California</dd>
+                
+                <dt>Current Stadium</dt>
+                <dd>Levi's Stadium (Santa Clara, CA)</dd>
+                
+                <dt>Team Colors</dt>
+                <dd>Red and Gold</dd>
+                
+                <dt>Championships</dt>
+                <dd>5 Super Bowls (1981, 1984, 1988, 1989, 1994)</dd>
+            </dl>
+        </section>
+        
+        <section>
+            <h2><svg class="icon" aria-hidden="true"><use href="/icons/sections.svg#icon-dynasty" /></svg>Dynasty Eras</h2>
+            <ul>
+                <li><a href="../dynasties/49ers-80s.html">1980s Dynasty (1981-1989)</a></li>
+                <!-- Additional dynasties would be listed here -->
+            </ul>
+        </section>
+        
+        <section>
+            <h2><svg class="icon" aria-hidden="true"><use href="/icons/sections.svg#icon-coach" /></svg>Notable Coaches</h2>
+            <ul>
+                <li><a href="../coaches/walsh.html">Bill Walsh (1979-1988)</a></li>
+                <!-- Additional coaches would be listed here -->
+            </ul>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 NFL Dynasty Tracker</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const darkModeCheckbox = document.getElementById('darkModeToggle');
+
+            if (darkModeCheckbox) {
+                const label = darkModeCheckbox.parentElement; // The <label> containing the checkbox
+
+                // Listen for 'change' events on the label (bubbling from the checkbox)
+                label.addEventListener('change', function(event) {
+                    // Ensure the event originated from our specific checkbox
+                    if (event.target === darkModeCheckbox) {
+                        const isChecked = event.target.checked;
+
+                        // Create and dispatch the custom event to the body
+                        const customToggleEvent = new CustomEvent('darkmode:toggle', {
+                            detail: { isChecked: isChecked },
+                            bubbles: true // Allows the event to bubble
+                        });
+                        body.dispatchEvent(customToggleEvent);
+
+                        event.stopPropagation(); // Stop the original 'change' event from bubbling further
+                    }
+                });
+            }
+
+            // Body now listens for our custom 'darkmode:toggle' event
+            body.addEventListener('darkmode:toggle', function(event) {
+                const isChecked = event.detail.isChecked;
+                if (isChecked) {
+                    body.classList.add('dark-mode');
+                } else {
+                    body.classList.remove('dark-mode');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

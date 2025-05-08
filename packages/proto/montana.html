@@ -22,6 +22,15 @@
         </nav>
     </header>
     
+    <script type="module">
+        import { define } from "@calpoly/mustang";
+        import { NflPlayerInfoElement } from "/src/nfl-player-info";
+
+        define({
+            "nfl-player-info": NflPlayerInfoElement
+        });
+    </script>
+
     <main>
         <nfl-player-info
             section-title="Player Information"
