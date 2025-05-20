@@ -23,4 +23,20 @@ function get(fullName: string): Promise<Player | null> {
   return PlayerModel.findOne({ fullName }).exec();
 }
 
-export default { index, get };
+function create(playerData: Player): Promise<Player> {
+  const newPlayer = new PlayerModel(playerData);
+  return newPlayer.save();
+}
+
+function update(fullName: string, playerData: Partial<Player>): Promise<Player | null> {
+  return PlayerModel.findOneAndUpdate({ fullName }, playerData, { new: true }).exec();
+}
+
+async function remove(fullName: string): Promise<void> {
+  const result = await PlayerModel.findOneAndDelete({ fullName }).exec();
+  if (!result) {
+    throw new Error(`Player with fullName '${fullName}' not found for deletion.`);
+  }
+}
+
+export default { index, get, create, update, remove };

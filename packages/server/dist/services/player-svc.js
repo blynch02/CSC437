@@ -40,4 +40,17 @@ function index() {
 function get(fullName) {
   return PlayerModel.findOne({ fullName }).exec();
 }
-var player_svc_default = { index, get };
+function create(playerData) {
+  const newPlayer = new PlayerModel(playerData);
+  return newPlayer.save();
+}
+function update(fullName, playerData) {
+  return PlayerModel.findOneAndUpdate({ fullName }, playerData, { new: true }).exec();
+}
+async function remove(fullName) {
+  const result = await PlayerModel.findOneAndDelete({ fullName }).exec();
+  if (!result) {
+    throw new Error(`Player with fullName '${fullName}' not found for deletion.`);
+  }
+}
+var player_svc_default = { index, get, create, update, remove };

@@ -23,27 +23,16 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var import_mongo = require("./services/mongo");
 var import_express = __toESM(require("express"));
-var import_player_svc = __toESM(require("./services/player-svc"));
+var import_players = __toESM(require("./routes/players"));
 (0, import_mongo.connect)("nfl-dynasty");
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
 const staticDir = process.env.STATIC || "public";
 app.use(import_express.default.static(staticDir));
+app.use(import_express.default.json());
+app.use("/api/players", import_players.default);
 app.get("/hello", (req, res) => {
   res.send("Hello, World");
-});
-app.get("/players/:fullName", (req, res) => {
-  const { fullName } = req.params;
-  import_player_svc.default.get(fullName).then((player) => {
-    if (player) {
-      res.json(player);
-    } else {
-      res.status(404).send("Player not found");
-    }
-  }).catch((err) => {
-    console.error("Error fetching player:", err);
-    res.status(500).send("Error fetching player");
-  });
 });
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
