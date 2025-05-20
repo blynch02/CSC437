@@ -1,0 +1,110 @@
+/* Layout Styles */
+
+header {
+    display: flex;
+    justify-content: space-between; /* Space out items like title and nav */
+    align-items: center; /* Vertically align items */
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens if needed */
+    gap: var(--size-spacing-medium); /* Add gap between items if they wrap */
+    /* Padding is already applied via page.css based on tokens */
+}
+
+/* Constrain and center main content area */
+main {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr); /* 12 equal fraction columns */
+    gap: var(--size-spacing-large); /* Gap between grid columns/rows */
+
+    max-width: 1100px; /* Slightly less than 1200 to allow some breathing room */
+    margin-left: auto;
+    margin-right: auto;
+    padding: var(--size-spacing-large) var(--size-spacing-xlarge); /* Vertical and Horizontal padding */
+    margin-bottom: var(--size-spacing-xlarge);
+}
+
+/* Default layout for sections within main */
+main > section {
+    grid-column: span 12; /* Make sections span full width by default */
+}
+
+/* Add some default bottom margin to sections for spacing */
+section {
+    margin-bottom: var(--size-spacing-xlarge);
+}
+
+/* Layout for Definition Lists (e.g., Team Info, Player Info) */
+dl {
+    display: grid;
+    grid-template-columns: auto 1fr; /* Label column sized to content, Value takes remaining space */
+    gap: var(--size-spacing-small) var(--size-spacing-large); /* Row gap and Column gap */
+    margin-bottom: var(--size-spacing-large); /* Consistent spacing below lists */
+}
+
+dd {
+    margin-left: 0; /* Remove browser default indentation */
+}
+
+/* Layout for Unordered Lists (e.g., Franchises, Achievements, Players) */
+ul {
+    margin-bottom: var(--size-spacing-large); /* Consistent spacing below lists */
+    /* display: grid; */ /* Uncomment and configure if grid layout is needed */
+    /* gap: var(--size-spacing-small); */
+}
+
+li {
+    margin-bottom: var(--size-spacing-small); /* Consistent spacing between list items */
+}
+
+/* Style links within lists specifically if needed */
+/* li a { ... } */
+
+/* --- Responsive Breakpoints --- */
+
+/* Tablet */
+@media (max-width: 992px) {
+    main {
+        grid-template-columns: repeat(8, 1fr); /* Switch to 8 columns */
+        gap: var(--size-spacing-medium); /* Slightly reduce gap */
+        padding: var(--size-spacing-medium) var(--size-spacing-large);
+    }
+    main > section {
+        grid-column: span 8; /* Span full width (8 cols) */
+    }
+    /* Adjust h1/h2 font size potentially */
+    h1 { font-size: 2.2em; }
+    h2 { font-size: 1.8em; }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    main {
+        grid-template-columns: repeat(4, 1fr); /* Switch to 4 columns */
+        gap: var(--size-spacing-small);
+        padding: var(--size-spacing-small) var(--size-spacing-medium);
+    }
+    main > section {
+        grid-column: span 4; /* Span full width (4 cols) */
+    }
+
+    header {
+        justify-content: center; /* Center header items on small screens */
+        text-align: center;
+    }
+    header nav {
+        width: 100%; /* Make nav take full width if it wraps */
+        text-align: center;
+        margin-top: var(--size-spacing-small);
+    }
+
+    /* Adjust h1/h2 font size potentially */
+    h1 { font-size: 1.8em; }
+    h2 { font-size: 1.5em; }
+
+    dl {
+        grid-template-columns: 1fr; /* Stack dl items */
+        gap: 0 var(--size-spacing-small); /* Remove column gap, keep row gap */
+    }
+    dt {
+        margin-bottom: 0.1em;
+    }
+} 
