@@ -12,32 +12,40 @@
     <link rel="stylesheet" href="/styles/tokens.css">
     <link rel="stylesheet" href="/styles/page.css">
     <link rel="stylesheet" href="/styles/layout.css">
+    <script type="module">
+        import { define, Auth } from "@calpoly/mustang";
+        // Assuming your header component will be created or already exists at this path
+        import { AppHeaderElement } from "./src/components/app-header.ts"; 
+
+        define({
+            "mu-auth": Auth.Provider,
+            "app-header": AppHeaderElement // Define your header element here
+        });
+
+        // If your header has an initializeOnce or similar static method from the lab example:
+        // AppHeaderElement.initializeOnce(); 
+    </script>
 </head>
 <body class="index-page">
-    <header>
-        <h1>NFL Dynasty Tracker</h1>
-        <p>Explore the greatest dynasties in NFL history</p>
-        <label>
-            <input type="checkbox" id="darkModeToggle" autocomplete="off" />
-            Dark mode
-        </label>
-    </header>
-    
-    <main>
-        <section>
-            <h2>NFL Franchises</h2>
-            <p>Select a franchise to explore its dynasties:</p>
-            
-            <ul>
-                <li><a href="franchises/49ers.html">San Francisco 49ers</a></li>
-                <!-- More franchises would be listed here -->
-            </ul>
-        </section>
-    </main>
-    
-    <footer>
-        <p>&copy; 2025 NFL Dynasty Tracker</p>
-    </footer>
+    <mu-auth provides="nfl-dynasty:auth"> <!-- Choose a unique context name -->
+        <app-header></app-header>
+        
+        <main>
+            <section>
+                <h2>NFL Franchises</h2>
+                <p>Select a franchise to explore its dynasties:</p>
+                
+                <ul>
+                    <li><a href="franchises/49ers.html">San Francisco 49ers</a></li>
+                    <!-- More franchises would be listed here -->
+                </ul>
+            </section>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 NFL Dynasty Tracker</p>
+        </footer>
+    </mu-auth>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {

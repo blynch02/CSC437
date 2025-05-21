@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | NFL Dynasty Tracker</title>
+  <!-- You might want to link your existing stylesheets or a specific one for login -->
+  <link rel="stylesheet" href="/styles/reset.css">
+  <link rel="stylesheet" href="/styles/tokens.css">
+  <link rel="stylesheet" href="/styles/page.css"> 
+  <link rel="stylesheet" href="/styles/layout.css">
+  <style>
+    /* Basic styles for login form centering and appearance */
+    body.login-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+    .login-card { background-color: var(--color-background-card, white); padding: var(--size-spacing-xlarge, 2rem); border-radius: var(--border-radius, 0.25rem); box-shadow: var(--shadow-medium, 0 2px 4px rgba(0,0,0,0.2)); width: 100%; max-width: 400px; margin-top: 2rem; }
+    login-form label { display: block; margin-bottom: var(--size-spacing-medium, 0.5rem); }
+    login-form span { display: block; margin-bottom: var(--size-spacing-small, 0.25rem); font-weight: bold; }
+    login-form input { width: 100%; padding: var(--size-spacing-medium, 0.5rem); border: 1px solid var(--border-color, #ccc); border-radius: var(--border-radius, 0.25rem); }
+    login-form button[type="submit"] { background-color: var(--color-primary, blue); color: var(--color-text-light, white); padding: var(--size-spacing-large, 1rem); border: none; border-radius: var(--border-radius, 0.25rem); cursor: pointer; width: 100%; margin-top: var(--size-spacing-large, 1rem); }
+    login-form .error { color: var(--color-primary); /* Using primary as error color for now */ margin-top: var(--size-spacing-medium, 0.5rem); }
+    .signup-link { margin-top: var(--size-spacing-large, 1rem); text-align: center; }
+  </style>
+  <script type="module">
+    import { define, Auth } from "@calpoly/mustang";
+    // Import using a path relative to the project root (packages/proto)
+    import { LoginFormElement } from "/src/auth/login-form.ts"; // Vite will handle .ts -> .js
+
+    define({
+      "mu-auth": Auth.Provider,
+      "login-form": LoginFormElement
+    });
+  </script>
+</head>
+<body class="page login-page">
+  <mu-auth>
+    <header style="text-align: center; margin-bottom: 1rem;">
+        <h1>NFL Dynasty Tracker</h1>
+    </header>
+    <main class="login-card">
+      <h2>User Login</h2>
+      <login-form api="http://localhost:3000/auth/login" redirect="/">
+        <label>
+          <span>Username:</span>
+          <input name="username" autocomplete="username" />
+        </label>
+        <label>
+          <span>Password:</span>
+          <input type="password" name="password" autocomplete="current-password" />
+        </label>
+        <!-- The submit button will be part of the login-form component's default slot content -->
+      </login-form>
+    </main>
+    <p class="signup-link">
+        Or did you want to
+        <a href="newuser.html">Sign up as a new user</a>?
+        (New user page not yet implemented)
+    </p>
+  </mu-auth>
+</body>
+</html> 

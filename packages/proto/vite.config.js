@@ -10,6 +10,8 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         montana: resolve(__dirname, 'montana.html'),
+        login: resolve(__dirname, 'login.html'),
+        profile: resolve(__dirname, 'profile.html')
         // Add other HTML files that import TS modules here
       },
     },
