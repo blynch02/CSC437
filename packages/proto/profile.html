@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - NFL Dynasty Tracker</title>
+    <link rel="stylesheet" href="/styles/reset.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/tokens.css">
+    <link rel="stylesheet" href="/styles/page.css">
+    <link rel="stylesheet" href="/styles/layout.css">
+    <script type="module">
+        import { define, Auth } from "@calpoly/mustang";
+        import { AppHeaderElement } from "./src/components/app-header.ts";
+        // We will create profile-view.ts next
+        import { ProfileViewElement } from "./src/views/profile-view.ts";
+
+        define({
+            "mu-auth": Auth.Provider,
+            "app-header": AppHeaderElement,
+            "profile-view": ProfileViewElement 
+        });
+    </script>
+</head>
+<body>
+    <!-- Redirect to login if not authenticated, otherwise show content -->
+    <mu-auth provides="nfl-dynasty:auth" redirect="/login.html">
+        <app-header></app-header>
+        <main>
+            <h1>User Profile</h1>
+            <profile-view></profile-view>
+        </main>
+        <footer>
+            <p>&copy; 2025 NFL Dynasty Tracker</p>
+        </footer>
+    </mu-auth>
+</body>
+</html> 
