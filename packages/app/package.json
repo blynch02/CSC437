@@ -1,23 +1,24 @@
 {
-  "name": "proto",
+  "name": "app",
   "version": "1.0.0",
   "main": "index.html",
   "scripts": {
-    "start": "http-server dist -p 3000",
-    "dev": "npx vite",
+    "dev": "vite",
     "build": "tsc && vite build",
+    "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "NFL Dynasty Tracker - Single Page Application",
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vite": "^5.0.0"
+  },
   "dependencies": {
     "@calpoly/mustang": "^1.0.15",
-    "http-server": "^14.1.1",
     "lit": "^3.1.0",
-    "typescript": "^5.8.3"
-  },
-  "devDependencies": {
-    "vite": "^5.0.0"
+    "server": "^1.0.0"
   }
 }
