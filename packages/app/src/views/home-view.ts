@@ -1,8 +1,13 @@
-import { LitElement, html, css } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { html, css } from 'lit';
+import { View } from '@calpoly/mustang';
+import { Msg } from '../messages';
+import { Model } from '../model';
 
-@customElement('home-view')
-export class HomeViewElement extends LitElement {
+export class HomeViewElement extends View<Model, Msg> {
+  constructor() {
+    super("nfl-dynasty:model");
+  }
+
   static styles = css`
     :host {
       display: block;

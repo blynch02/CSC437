@@ -1,37 +1,35 @@
-import { LitElement, html, css } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
-import { Observer, Auth } from '@calpoly/mustang';
+import { html, css } from 'lit';
+import { state } from 'lit/decorators.js';
+import { View } from '@calpoly/mustang';
+import { Msg } from '../messages';
+import { Model } from '../model';
 
-@customElement('profile-view')
-export class ProfileViewElement extends LitElement {
+export class ProfileViewElement extends View<Model, Msg> {
   @state()
-  private userid?: string;
+  get profile() {
+    return this.model.profile;
+  }
 
   @state()
-  private loading = true;
+  get loading(): boolean {
+    return this.model.loading || false;
+  }
 
-  private _authObserver = new Observer<Auth.Model>(this, "nfl-dynasty:auth");
+  constructor() {
+    super("nfl-dynasty:model");
+  }
 
   connectedCallback() {
     super.connectedCallback();
-    this._authObserver.observe(({ user }) => {
-      console.log("[profile-view] Auth state received:", user);
-      if (user && user.authenticated) {
-        this.userid = user.username;
-        this.loading = false;
-      } else {
-        this.userid = undefined;
-        this.loading = false;
-        // In SPA, redirect to login route instead of separate page
-        const currentPath = window.location.pathname + window.location.search + window.location.hash;
-        if (window.location.pathname !== '/app/login') {
-          // Use SPA routing for login
-          window.history.pushState(null, '', `/app/login?redirect_uri=${encodeURIComponent(currentPath)}`);
-          // Trigger a custom event to update the router
-          window.dispatchEvent(new PopStateEvent('popstate'));
-        }
-      }
-    });
+    // Load profile data when component connects
+    // In a real app, this would load user-specific profile data
+    // For now, we'll use basic auth info
+    if (!this.profile) {
+      this.dispatchMessage([
+        "profile/load",
+        { username: "current-user" }
+      ]);
+    }
   }
 
   static styles = css`
@@ -136,7 +134,7 @@ export class ProfileViewElement extends LitElement {
       `;
     }
 
-    if (!this.userid) {
+    if (!this.profile) {
       return html`
         <div class="loading">
           <p>Redirecting to login...</p>
@@ -147,7 +145,7 @@ export class ProfileViewElement extends LitElement {
     return html`
       <div class="profile-container">
         <section class="profile-info">
-          <h2>Welcome, ${this.userid}!</h2>
+          <h2>Welcome, ${this.profile.username}!</h2>
           <p>This is your profile page. You're successfully logged into the NFL Dynasty Tracker.</p>
           <p>Here you can manage your preferences, view your favorite teams, and track your dynasty exploration progress.</p>
           

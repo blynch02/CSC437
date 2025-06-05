@@ -1,0 +1,26 @@
+* {
+  margin: 0;
+  padding: 0; /* Add padding reset too */
+  box-sizing: border-box;
+}
+
+body {
+  line-height: 1.5; /* Establish base line height */
+  -webkit-font-smoothing: antialiased; /* Improve font rendering */
+}
+
+img, picture, video, canvas, svg { /* Make media flexible */
+  display: block; /* Avoid bottom space */
+  max-width: 100%;
+}
+
+/* Optional: Remove list styles */
+ul, ol {
+  list-style: none;
+}
+
+/* Optional: Basic anchor reset */
+a {
+  text-decoration: none;
+  color: inherit;
+}

@@ -1,7 +1,9 @@
-import { LitElement, html, css } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
-import { Observer, Auth } from '@calpoly/mustang';
-import { Player } from '../models/player';
+import { css, html } from 'lit';
+import { property, state } from 'lit/decorators.js';
+import { View } from '@calpoly/mustang';
+import { Player } from 'server/models';
+import { Msg } from '../messages';
+import { Model } from '../model';
 
 // Demo player data for fallback when API is unavailable
 const DEMO_PLAYERS: Record<string, Player> = {
@@ -51,142 +53,76 @@ const DEMO_PLAYERS: Record<string, Player> = {
   }
 };
 
-@customElement('player-view')
-export class PlayerViewElement extends LitElement {
+export class PlayerViewElement extends View<Model, Msg> {
   @property({ attribute: 'player-name' })
   playerName?: string;
 
   @state()
-  private player?: Player;
+  get player(): Player | undefined {
+    return this.model.player;
+  }
 
   @state()
-  private loading = false;
+  get loading(): boolean {
+    return this.model.loading || false;
+  }
 
-  @state()
-  private error?: string;
+  constructor() {
+    super("nfl-dynasty:model");
+  }
 
-  @state()
-  private authenticated = false;
-
-  @state()
-  private usingFallback = false;
-
-  @state()
-  private authToken?: string;
-
-  private _authObserver = new Observer<Auth.Model>(this, "nfl-dynasty:auth");
+  attributeChangedCallback(
+    name: string,
+    oldValue: string,
+    newValue: string
+  ) {
+    super.attributeChangedCallback(name, oldValue, newValue);
+    if (
+      name === "player-name" &&
+      oldValue !== newValue &&
+      newValue
+    ) {
+      this.dispatchMessage([
+        "player/select",
+        { fullName: newValue }
+      ]);
+    }
+  }
 
   connectedCallback() {
     super.connectedCallback();
-    this._authObserver.observe(({ user }) => {
-      if (user && user.authenticated) {
-        this.authenticated = true;
-        // Don't try to access user.token as it may not exist
-        console.log("[player-view] User authenticated, loading data");
-        // Always try API first when authenticated
-        if (this.playerName && !this.loading) {
-          this.loadPlayerData();
-        }
-      } else {
-        this.authenticated = false;
-        this.authToken = undefined;
-        console.log("[player-view] User not authenticated, trying API anyway then falling back");
-        // Still try API first (might work if token in localStorage)
-        if (this.playerName) {
-          this.loadPlayerData();
-        }
-      }
-    });
-  }
-
-  updated(changedProperties: Map<string, any>) {
-    // If playerName changes, load new data
-    if (changedProperties.has('playerName') && this.playerName) {
-      // Always try API first
-      this.loadPlayerData();
+    if (this.playerName) {
+      this.dispatchMessage([
+        "player/select",
+        { fullName: this.playerName }
+      ]);
     }
   }
 
-  private getAuthToken(): string {
-    // Try multiple sources for the auth token
-    return this.authToken || 
-           localStorage.getItem('token') || 
-           localStorage.getItem('auth:token') || 
-           '';
+  private get fallbackPlayer(): Player | undefined {
+    return this.playerName ? DEMO_PLAYERS[this.playerName] : undefined;
   }
 
-  async loadPlayerData() {
-    if (!this.playerName) return;
-
-    this.loading = true;
-    this.error = undefined;
-    this.player = undefined;
-    this.usingFallback = false;
-
-    console.log(`[player-view] Loading data for: ${this.playerName}`);
-
-    try {
-      // Always try the API first
-      const token = this.getAuthToken();
-      console.log(`[player-view] Using token: ${token ? 'Token available' : 'No token'}`);
-      
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json'
-      };
-      
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-
-      const response = await fetch(`/api/players/${this.playerName}`, {
-        headers
-      });
-
-      console.log(`[player-view] API response status: ${response.status}`);
-
-      if (response.ok) {
-        const playerData = await response.json();
-        console.log('[player-view] Successfully loaded from API:', playerData);
-        this.player = playerData;
-        this.usingFallback = false;
-        this.error = undefined;
-      } else if (response.status === 401) {
-        console.log('[player-view] API requires authentication, falling back to demo data');
-        this.loadFallbackData();
-        return;
-      } else if (response.status === 404) {
-        console.log('[player-view] Player not found in API, falling back to demo data');
-        this.loadFallbackData();
-        return;
-      } else {
-        throw new Error(`API Error: ${response.status} ${response.statusText}`);
-      }
-    } catch (err: any) {
-      console.error('[player-view] API failed:', err);
-      console.log('[player-view] Falling back to demo data');
-      this.loadFallbackData();
-      return;
-    } finally {
-      this.loading = false;
-    }
+  private get displayPlayer(): Player | undefined {
+    return this.player || this.fallbackPlayer;
   }
 
-  loadFallbackData() {
-    if (!this.playerName) return;
-    
-    console.log(`[player-view] Loading fallback data for: ${this.playerName}`);
-    this.usingFallback = true;
-    
-    const demoPlayer = DEMO_PLAYERS[this.playerName];
-    if (demoPlayer) {
-      this.player = demoPlayer;
-      this.error = undefined;
-      console.log('[player-view] Successfully loaded fallback data');
-    } else {
-      this.error = `Player "${this.playerName}" not found in demo data.`;
-      this.player = undefined;
-      console.log(`[player-view] Player not found in fallback data: ${this.playerName}`);
-    }
+  private get usingFallback(): boolean {
+    return !this.player && !!this.fallbackPlayer;
+  }
+
+  private get availablePlayerNavigation(): Array<{name: string, displayName: string}> {
+    // Available players for navigation
+    const allPlayers = [
+      { name: 'Joe-Montana', displayName: 'Joe Montana' },
+      { name: 'Jerry-Rice', displayName: 'Jerry Rice' },
+      { name: 'Joseph Clifford Montana Jr.', displayName: 'Joe Montana (Full)' }
+    ];
+
+    // Filter out the current player and return up to 2 others
+    return allPlayers
+      .filter(player => player.name !== this.playerName)
+      .slice(0, 2);
   }
 
   static styles = css`
@@ -350,27 +286,13 @@ export class PlayerViewElement extends LitElement {
       `;
     }
 
-    if (this.error) {
+    const currentPlayer = this.displayPlayer;
+    if (!currentPlayer) {
       return html`
         <div class="player-container">
           <div class="error">
-            <h2>Error Loading Player</h2>
-            <p>${this.error}</p>
-            <button @click=${this.loadPlayerData} class="nav-button">Try Again</button>
-          </div>
-          <div class="navigation">
-            <a href="/app" class="nav-button">← Back to Home</a>
-          </div>
-        </div>
-      `;
-    }
-
-    if (!this.player) {
-      return html`
-        <div class="player-container">
-          <div class="error">
-            <h2>No Player Data</h2>
-            <p>No player information available.</p>
+            <h2>Player Not Found</h2>
+            <p>No player information available for "${this.playerName}".</p>
           </div>
           <div class="navigation">
             <a href="/app" class="nav-button">← Back to Home</a>
@@ -383,7 +305,7 @@ export class PlayerViewElement extends LitElement {
       <div class="player-container">
         ${this.usingFallback ? html`
           <div class="demo-notice">
-            📝 <strong>Demo Mode:</strong> Showing sample data. ${this.authenticated ? 'API not available.' : 'Sign in to access live data.'}
+            📝 <strong>Demo Mode:</strong> Showing sample data. Sign in to access live data.
           </div>
         ` : html`
           <div class="api-notice">
@@ -392,47 +314,49 @@ export class PlayerViewElement extends LitElement {
         `}
 
         <div class="player-header">
-          <h1>${this.player.fullName}</h1>
-          <p class="player-subtitle">${this.player.position} | ${this.player.teams}</p>
+          <h1>${currentPlayer.fullName}</h1>
+          <p class="player-subtitle">${currentPlayer.position} | ${currentPlayer.teams}</p>
         </div>
 
         <div class="player-info">
           <h2 class="section-header">
             <svg class="icon" aria-hidden="true">
-              <use href="/icons/sections.svg#${this.player.iconRef || 'icon-team-info'}"></use>
+              <use href="/icons/sections.svg#${currentPlayer.iconRef || 'icon-team-info'}"></use>
             </svg>
-            ${this.player.sectionTitle || 'Player Information'}
+            ${currentPlayer.sectionTitle || 'Player Information'}
           </h2>
           
           <div class="player-details">
             <div class="detail-label">Full Name:</div>
-            <div class="detail-value">${this.player.fullName}</div>
+            <div class="detail-value">${currentPlayer.fullName}</div>
             
             <div class="detail-label">Position:</div>
-            <div class="detail-value">${this.player.position}</div>
+            <div class="detail-value">${currentPlayer.position}</div>
             
             <div class="detail-label">Years Active:</div>
-            <div class="detail-value">${this.player.yearsActive}</div>
+            <div class="detail-value">${currentPlayer.yearsActive}</div>
             
             <div class="detail-label">Teams:</div>
-            <div class="detail-value">${this.player.teams}</div>
+            <div class="detail-value">${currentPlayer.teams}</div>
             
             <div class="detail-label">Jersey Number:</div>
-            <div class="detail-value">${this.player.jerseyNumber}</div>
+            <div class="detail-value">${currentPlayer.jerseyNumber}</div>
             
             <div class="detail-label">Hall of Fame:</div>
-            <div class="detail-value">${this.player.hofInductionYear}</div>
+            <div class="detail-value">${currentPlayer.hofInductionYear}</div>
             
-            ${this.player.nicknames ? html`
+            ${currentPlayer.nicknames ? html`
               <div class="detail-label">Nicknames:</div>
-              <div class="detail-value">${this.player.nicknames}</div>
+              <div class="detail-value">${currentPlayer.nicknames}</div>
             ` : ''}
           </div>
         </div>
 
         <div class="navigation">
           <a href="/app" class="nav-button">← Back to Home</a>
-          <a href="/app/player/Jerry-Rice" class="nav-button">Jerry Rice</a>
+          ${this.availablePlayerNavigation.map(player => html`
+            <a href="/app/player/${player.name}" class="nav-button">${player.displayName}</a>
+          `)}
           <a href="/app/profile" class="nav-button">Profile</a>
         </div>
       </div>

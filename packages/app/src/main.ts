@@ -5,9 +5,13 @@ import {
   Auth,
   define,
   History,
+  Store,
   Switch
 } from "@calpoly/mustang";
 import { html } from "lit";
+import { Msg } from "./messages";
+import { Model, init } from "./model";
+import update from "./update";
 import { NflDynastyHeaderElement } from "./components/nfl-dynasty-header";
 import { HomeViewElement } from "./views/home-view";
 import { ProfileViewElement } from "./views/profile-view";
@@ -57,6 +61,11 @@ const routes = [
 define({
   "mu-auth": Auth.Provider,
   "mu-history": History.Provider,
+  "mu-store": class AppStore extends Store.Provider<Model, Msg> {
+    constructor() {
+      super(update, init, "nfl-dynasty:auth");
+    }
+  },
   "mu-switch": class AppSwitch extends Switch.Element {
     constructor() {
       super(routes, "nfl-dynasty:history", "nfl-dynasty:auth");

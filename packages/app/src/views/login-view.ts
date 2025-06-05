@@ -1,13 +1,15 @@
-import { LitElement, html, css } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { html, css } from 'lit';
+import { state } from 'lit/decorators.js';
+import { View } from '@calpoly/mustang';
+import { Msg } from '../messages';
+import { Model } from '../model';
 
 interface LoginFormData {
   username?: string;
   password?: string;
 }
 
-@customElement('login-view')
-export class LoginViewElement extends LitElement {
+export class LoginViewElement extends View<Model, Msg> {
   @state()
   private formData: LoginFormData = {};
 
@@ -16,6 +18,10 @@ export class LoginViewElement extends LitElement {
 
   @state()
   private loading = false;
+
+  constructor() {
+    super("nfl-dynasty:model");
+  }
 
   get canSubmit(): boolean {
     return !!(this.formData.username && this.formData.password);

@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@calpoly/mustang": "^1.0.15",
-    "lit": "^3.1.0"
+    "lit": "^3.1.0",
+    "server": "^1.0.0"
   }
 }
