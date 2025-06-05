@@ -16,6 +16,7 @@ import { NflDynastyHeaderElement } from "./components/nfl-dynasty-header";
 import { HomeViewElement } from "./views/home-view";
 import { ProfileViewElement } from "./views/profile-view";
 import { PlayerViewElement } from "./views/player-view";
+import { PlayerEditViewElement } from "./views/player-edit-view";
 import { LoginViewElement } from "./views/login-view";
 
 
@@ -31,6 +32,12 @@ const routes = [
     path: "/app/franchise/:name",
     view: (params: Switch.Params) => html`
       <franchise-view franchise-name=${params.name}></franchise-view>
+    `
+  },
+  {
+    path: "/app/player/:fullName/edit",
+    view: (params: Switch.Params) => html`
+      <player-edit-view player-name=${params.fullName}></player-edit-view>
     `
   },
   {
@@ -76,6 +83,7 @@ define({
   "home-view": HomeViewElement,
   "profile-view": ProfileViewElement,
   "player-view": PlayerViewElement,
+  "player-edit-view": PlayerEditViewElement,
   "login-view": LoginViewElement,
   // Placeholder franchise view
   "franchise-view": class PlaceholderFranchise extends HTMLElement {

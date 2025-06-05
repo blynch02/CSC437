@@ -354,6 +354,7 @@ export class PlayerViewElement extends View<Model, Msg> {
 
         <div class="navigation">
           <a href="/app" class="nav-button">← Back to Home</a>
+          <a href="/app/player/${this.playerName}/edit" class="nav-button">Edit Player</a>
           ${this.availablePlayerNavigation.map(player => html`
             <a href="/app/player/${player.name}" class="nav-button">${player.displayName}</a>
           `)}

@@ -54,9 +54,31 @@ export default function update(
         .then((player) =>
           apply((model) => ({ ...model, player, loading: false }))
         )
-        .catch((error) => {
-          console.error("Failed to save player:", error);
+        .then(() => {
+          const { onSuccess } = message[1];
+          if (onSuccess) onSuccess();
+        })
+        .catch((error: Error) => {
           apply((model) => ({ ...model, loading: false }));
+          const { onFailure } = message[1];
+          if (onFailure) onFailure(error);
+        });
+      apply((model) => ({ ...model, loading: true }));
+      break;
+
+    case "profile/save":
+      saveProfile(message[1], user)
+        .then((profile) =>
+          apply((model) => ({ ...model, profile, loading: false }))
+        )
+        .then(() => {
+          const { onSuccess } = message[1];
+          if (onSuccess) onSuccess();
+        })
+        .catch((error: Error) => {
+          apply((model) => ({ ...model, loading: false }));
+          const { onFailure } = message[1];
+          if (onFailure) onFailure(error);
         });
       apply((model) => ({ ...model, loading: true }));
       break;
@@ -119,7 +141,12 @@ function loadProfile(
 }
 
 function savePlayer(
-  payload: { fullName: string; player: Player },
+  payload: { 
+    fullName: string; 
+    player: Player; 
+    onSuccess?: () => void; 
+    onFailure?: (err: Error) => void;
+  },
   user: Auth.User
 ): Promise<Player> {
   return fetch(`/api/players/${payload.fullName}`, {
@@ -140,4 +167,19 @@ function savePlayer(
       console.log("Saved Player:", json);
       return json as Player;
     });
-} 
+}
+
+function saveProfile(
+  payload: { 
+    userid: string; 
+    profile: { username: string }; 
+    onSuccess?: () => void; 
+    onFailure?: (err: Error) => void;
+  },
+  _user: Auth.User
+): Promise<{ username: string }> {
+  // For now, just return the profile data (no actual API call)
+  return Promise.resolve(payload.profile);
+}
+
+// savePlayer function will be implemented in next phase 
