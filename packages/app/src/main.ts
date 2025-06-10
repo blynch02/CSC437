@@ -18,6 +18,8 @@ import { ProfileViewElement } from "./views/profile-view";
 import { PlayerViewElement } from "./views/player-view";
 import { PlayerEditViewElement } from "./views/player-edit-view";
 import { LoginViewElement } from "./views/login-view";
+import { FranchiseViewElement } from "./views/franchise-view";
+import { GameViewElement } from "./views/game-view";
 
 
 // Define routes before the define() statement
@@ -32,6 +34,12 @@ const routes = [
     path: "/app/franchise/:name",
     view: (params: Switch.Params) => html`
       <franchise-view franchise-name=${params.name}></franchise-view>
+    `
+  },
+  {
+    path: "/app/game/:gameId",
+    view: (params: Switch.Params) => html`
+      <game-view game-id=${params.gameId}></game-view>
     `
   },
   {
@@ -85,19 +93,7 @@ define({
   "player-view": PlayerViewElement,
   "player-edit-view": PlayerEditViewElement,
   "login-view": LoginViewElement,
-  // Placeholder franchise view
-  "franchise-view": class PlaceholderFranchise extends HTMLElement {
-    connectedCallback() {
-      const franchiseName = this.getAttribute('franchise-name') || 'Unknown';
-      this.innerHTML = `
-        <main style="padding: 2rem;">
-          <h2>Franchise: ${franchiseName}</h2>
-          <p>Franchise view placeholder.</p>
-          <p>This will show dynasty information, key players, and championship history.</p>
-          <a href="/app">← Back to Home</a>
-        </main>
-      `;
-    }
-  }
+  "franchise-view": FranchiseViewElement,
+  "game-view": GameViewElement
 });
 

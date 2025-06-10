@@ -92,9 +92,8 @@ export class HomeViewElement extends View<Model, Msg> {
           
           <ul>
             <li><a href="/app/franchise/49ers">San Francisco 49ers</a></li>
-            <li><a href="/app/franchise/cowboys">Dallas Cowboys</a></li>
-            <li><a href="/app/franchise/steelers">Pittsburgh Steelers</a></li>
             <li><a href="/app/franchise/patriots">New England Patriots</a></li>
+            <li><a href="/app/franchise/broncos">Denver Broncos</a></li>
           </ul>
           
           <div class="test-links">
