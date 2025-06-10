@@ -50,7 +50,61 @@ const DEMO_PLAYERS: Record<string, Player> = {
     jerseyNumber: "#80",
     hofInductionYear: "2010",
     nicknames: "'Flash 80', 'World'"
+  },
+  'Tom-Brady': {
+    sectionTitle: "Player Information",
+    iconRef: "icon-team-info",
+    fullName: "Tom Brady",
+    position: "Quarterback",
+    yearsActive: "2000-2022",
+    teams: "New England Patriots (2000-2019), Tampa Bay Buccaneers (2020-2022)",
+    jerseyNumber: "#12",
+    hofInductionYear: "TBD",
+    nicknames: "'TB12', 'The GOAT'"
+  },
+  'Rob-Gronkowski': {
+    sectionTitle: "Player Information",
+    iconRef: "icon-team-info",
+    fullName: "Rob Gronkowski",
+    position: "Tight End",
+    yearsActive: "2010-2021",
+    teams: "New England Patriots (2010-2018), Tampa Bay Buccaneers (2020-2021)",
+    jerseyNumber: "#87",
+    hofInductionYear: "TBD",
+    nicknames: "'Gronk'"
+  },
+  'John-Elway': {
+    sectionTitle: "Player Information",
+    iconRef: "icon-team-info",
+    fullName: "John Elway",
+    position: "Quarterback",
+    yearsActive: "1983-1998",
+    teams: "Denver Broncos (1983-1998)",
+    jerseyNumber: "#7",
+    hofInductionYear: "2004",
+    nicknames: "'The Duke'"
+  },
+  'Terrell-Davis': {
+    sectionTitle: "Player Information",
+    iconRef: "icon-team-info",
+    fullName: "Terrell Davis",
+    position: "Running Back",
+    yearsActive: "1995-2001",
+    teams: "Denver Broncos (1995-2001)",
+    jerseyNumber: "#30",
+    hofInductionYear: "2017",
+    nicknames: "'T.D.'"
   }
+};
+
+const teamColors: Record<string, { primary: string; secondary: string }> = {
+  "49ers": { primary: "#AA0000", secondary: "#B3995D" },
+  patriots: { primary: "#002244", secondary: "#C60C30" },
+  broncos: { primary: "#FB4F14", secondary: "#002244" },
+  chiefs: { primary: "#E31837", secondary: "#FFB81C" },
+  raiders: { primary: "#000000", secondary: "#A5ACAF" },
+  seahawks: { primary: "#002244", secondary: "#69BE28" },
+  buccaneers: { primary: "#D50A0A", secondary: "#343434" }
 };
 
 export class PlayerViewElement extends View<Model, Msg> {
@@ -111,12 +165,30 @@ export class PlayerViewElement extends View<Model, Msg> {
     return !this.player && !!this.fallbackPlayer;
   }
 
+  private get primaryTeam(): string {
+    const player = this.displayPlayer;
+    if (!player || !player.teams) return "default";
+
+    const teams = player.teams.split(",")[0];
+    if (teams.includes("49ers")) return "49ers";
+    if (teams.includes("Patriots")) return "patriots";
+    if (teams.includes("Broncos")) return "broncos";
+    if (teams.includes("Chiefs")) return "chiefs";
+    if (teams.includes("Raiders")) return "raiders";
+    if (teams.includes("Seahawks")) return "seahawks";
+    if (teams.includes("Buccaneers")) return "buccaneers";
+    return "default";
+  }
+
   private get availablePlayerNavigation(): Array<{name: string, displayName: string}> {
     // Available players for navigation
     const allPlayers = [
       { name: 'Joe-Montana', displayName: 'Joe Montana' },
       { name: 'Jerry-Rice', displayName: 'Jerry Rice' },
-      { name: 'Joseph Clifford Montana Jr.', displayName: 'Joe Montana (Full)' }
+      { name: 'Tom-Brady', displayName: 'Tom Brady' },
+      { name: 'Rob-Gronkowski', displayName: 'Rob Gronkowski' },
+      { name: 'John-Elway', displayName: 'John Elway' },
+      { name: 'Terrell-Davis', displayName: 'Terrell Davis' },
     ];
 
     // Filter out the current player and return up to 2 others
@@ -179,11 +251,12 @@ export class PlayerViewElement extends View<Model, Msg> {
       border-radius: var(--border-radius, 0.5rem);
       margin-bottom: var(--size-spacing-large, 2rem);
       text-align: center;
+      border-left: 10px solid var(--team-color-primary, #ddd);
     }
 
     .player-header h1 {
       margin: 0 0 var(--size-spacing-small, 0.5rem) 0;
-      color: var(--color-text-primary, #333);
+      color: var(--team-color-primary, #333);
       font-size: 2rem;
     }
 
@@ -204,7 +277,7 @@ export class PlayerViewElement extends View<Model, Msg> {
       display: flex;
       align-items: center;
       padding: var(--size-spacing-large, 1.5rem);
-      background-color: var(--color-primary, #007bff);
+      background-color: var(--team-color-primary, #007bff);
       color: white;
       margin: 0;
       font-size: 1.2rem;
@@ -248,11 +321,13 @@ export class PlayerViewElement extends View<Model, Msg> {
       text-decoration: none;
       border-radius: var(--border-radius, 0.25rem);
       margin: 0 var(--size-spacing-small, 0.5rem);
-      transition: background-color 0.2s ease;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+      border: 1px solid var(--team-color-secondary, #555);
     }
 
     .nav-button:hover {
-      background-color: var(--color-background-secondary-dark, #545b62);
+      background-color: var(--team-color-secondary, #5a6268);
+      transform: translateY(-2px);
     }
 
     .auth-message {
@@ -271,6 +346,10 @@ export class PlayerViewElement extends View<Model, Msg> {
 
     .auth-message a:hover {
       text-decoration: underline;
+    }
+
+    .edit-button {
+      background-color: var(--color-primary-red, #dc3545);
     }
   `;
 
@@ -301,7 +380,15 @@ export class PlayerViewElement extends View<Model, Msg> {
       `;
     }
 
+    const colors = teamColors[this.primaryTeam] || { primary: "#ddd", secondary: "#000" };
+
     return html`
+      <style>
+        :host {
+          --team-color-primary: ${colors.primary};
+          --team-color-secondary: ${colors.secondary};
+        }
+      </style>
       <div class="player-container">
         ${this.usingFallback ? html`
           <div class="demo-notice">
